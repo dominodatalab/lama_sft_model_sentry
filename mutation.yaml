@@ -1,0 +1,30 @@
+apiVersion: apps.dominodatalab.com/v1alpha1
+kind: Mutation
+metadata:
+  name: insert-mlflow-large-artifacts-efs-based
+  namespace: domino-platform
+rules:
+- jqSelector:
+      query: |
+        include "domsed/selectors/common";
+        $__kind__ == "Pod" and
+        (.metadata.labels."dominodatalab.com/workload-type" | isIn(["Workspace","Batch","Scheduled"]))
+  insertVolumeMounts:
+    containerSelector:
+      - run
+    volumeMounts:
+      - mountPath: "/artifacts/mlflow/{{ object['metadata']['labels']['dominodatalab.com/project-id'] }}"
+        subPath: "{{ object['metadata']['labels']['dominodatalab.com/project-id'] }}"
+        name: domino-shared-store-domino-compute-vol
+- jqSelector:
+      query: |
+        include "domsed/selectors/common";
+        $__kind__ == "Pod" and
+        (.metadata.labels."dominodatalab.com/workload-type" | isIn(["ModelAPI"]))
+  insertVolumeMounts:
+    containerSelector:
+      - model
+    volumeMounts:
+      - mountPath: "/artifacts/mlflow/{{ object['metadata']['labels']['dominodatalab.com/project-id'] }}"
+        subPath: "{{ object['metadata']['labels']['dominodatalab.com/project-id'] }}"
+        name: prediction-data-volume
