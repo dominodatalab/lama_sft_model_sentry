@@ -23,7 +23,6 @@ The following refinements are possible which will serve other Non Functional Req
 2. Instead of mounting a folder `/artifacts/mlflow/{DOMINO_PROJECT_ID}` we could mount the folder `/artifacts/mlflow/{DOMINO_PROJECT_ID}/{DOMINO_RUN_ID}` into a Workspace and mount `/artifacts/mlflow/{DOMINO_PROJECT_ID}/` into the Model API.
 3. This ensures that the artifacts cannot be modified afer a Domino workspace/job stops. MLFLOW Model Registry track the `DOMINO_RUN_ID` indirectly via the MLFLOW run associated with the registered model version. This can be used by the Model API to discover the artifacts folder loaded by the MLFLOW run from inside the workspace.
 4. If we are willing to create a custom domsed mutation we can go further and can also ensure only the `/artifacts/mlflow/{DOMINO_PROJECT_ID}/{DOMINO_RUN_ID}`  is mounted into the Model API Container making this operationally efficient.
-5. [Local Testing of the Pyfunc model inside the workspace] (https://github.com/dominodatalab/lama_sft_model_sentry/blob/main/local_testing_pyfunc_model.ipynb) - You should not have to leave your workspace to test model execution just because it is a LLM model. This is another area where the strategy to use a shared artifact folder shines. 
 
 >> The takeaway being, the approach is flexible and can adapt to complex requirements while still
 >> being cost efficient by ensuring large LLM artifacts are not copied multiple times, and compute
@@ -36,9 +35,8 @@ The following notebooks/code is included-
 1. Fine Tuning the LAMA SFT Model [notebook](https://github.com/dominodatalab/lama_sft_model_sentry/blob/main/llama2-ft.ipynb)
 2. Clone the [repo](https://github.com/dominodatalab/domino-field-solutions-installations). The model checkpoints are written to `/artifacts/mlflow/{DOMINO_PROJECT_ID}`
 3.  The pyfunc model is located in [my_model.py](https://github.com/dominodatalab/lama_sft_model_sentry/blob/main/my_model.py). This file reads the checkpoints from `/artifacts/mlflow/{DOMINO_PROJECT_ID}`
-4.  Register the model to MLFLOW Model Registry, using the [notebook](https://github.com/dominodatalab/lama_sft_model_sentry/blob/main/register_model.ipynb) , `register_model.ipynb`.
-5. Now you can use Model Sentry to view Model Cards, review model and deploy to Model API endpoint using the same Environment used to create the workspace (with the addition of libraries if any needed to run the model)
-
+4.  Register the model to MLFLOW Model Registry, using the [notebook](https://github.com/dominodatalab/lama_sft_model_sentry/blob/main/register_model.ipynb) , `register_model.ipynb`.  Now you can use Model Sentry to view Model Cards, review model and deploy to Model API endpoint using the same Environment used to create the workspace (with the addition of libraries if any needed to run the model)
+5.   [Local Testing of the Pyfunc model inside the workspace] (https://github.com/dominodatalab/lama_sft_model_sentry/blob/main/local_testing_pyfunc_model.ipynb) - You should not have to leave your workspace to test model execution just because it is a LLM model. This is another area where the strategy to use a shared artifact folder shines. 
 
 
 ## Installation 
