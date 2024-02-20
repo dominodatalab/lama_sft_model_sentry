@@ -11,6 +11,18 @@ The mount is unique to each project in Domino and is mounted a follows in the Do
 /artifacts/mlflow/{DOMINO_PROJECT_ID}
 ```
 
+For this basic demo, the mutation applies the "datasets" NFS mount into both workspaces and model api as follows:
+`/artifacts/mlflow/{DOMINO_PROJECT_ID}` ensuring the workloads only see the sub-folder for their projects. The Domino workloads will NOT log large LLM artifacts (such as checkpoints) to MLFLOW Artifact Store but instead write them directly to this location. Writing large files such as these to the artifact store is burden on storage cost (exorbitant because each deployment uses its own copy), execution time (for MLFLOW runs which adds to compute costs), model API deployment time (copying the large artifacts)
+
+The following refinements are possible which will serve other Non Functional Requirements like managing the integrity of the artifacts-
+
+1. The MODEL API will mount the NFS mount as a readonly folder.
+2. Instead of mounting a folder `/artifacts/mlflow/{DOMINO_PROJECT_ID}` we could mount the folder `/artifacts/mlflow/{DOMINO_PROJECT_ID}/{DOMINO_RUN_ID}` into a Workspace and mount `/artifacts/mlflow/{DOMINO_PROJECT_ID}/` into the Model API.
+3. This ensures that the artifacts cannot be modified afer a Domino workspace/job stops.
+MLFLOW Model Registry track the `DOMINO_RUN_ID` indirectly via the MLFLOW run associated with the registered model version. This can be used by the Model API to discover the artifacts folder loaded by the MLFLOW run from inside the workspace. A custom domsed mutation can also ensure only the `/artifacts/mlflow/{DOMINO_PROJECT_ID}/{DOMINO_RUN_ID}` is mounted making this operationally efficient.
+
+The takeaway being, the approach is flexible and can adapt to complex requirements while still being cost efficient by ensuring large LLM artifacts are not copied multiple times, and compute costs are no more than necessary.
+
 The following notebooks are included-
 
 1. Fine Tuning the LAMA SFT Model [notebook](https://github.com/dominodatalab/lama_sft_model_sentry/blob/main/llama2-ft.ipynb)
@@ -20,11 +32,10 @@ The following notebooks are included-
 5. Now you can use Model Sentry to view Model Cards, review model and deploy to Model API endpoint using the same Environment used to create the workspace (with the addition of libraries if any needed to run the model)
 
 
+
 ## Installation of Domsed
 
 Follow these steps:
-
-1. 
 
 ```shell
 cd domsed
@@ -38,19 +49,6 @@ kubectl label namespace ${compute_namespace} operator-enabled=true
 ```shell
 kubectl -n domino-platform create -f mutation.yaml
 ```
-
-For this basic demo, the mutation applies the "datasets" NFS mount into both workspaces and model api as follows:
-`/artifacts/mlflow/{DOMINO_PROJECT_ID}` ensuring the workloads only see the sub-folder for their projects. The Domino workloads will not log LLM artifacts (such as checkpoints) to MLFLOW Artifact Store but instead write them directly to this location.
-
-The following refinements are possible which will serve other Non Functional Requirements like managing the integrity of the artifacts-
-1. The MODEL API will mount the NFS mount as a readonly folder
-2. Instead of mounting a folder `/artifacts/mlflow/{DOMINO_PROJECT_ID}` we could mount the folder `/artifacts/mlflow/{DOMINO_PROJECT_ID}/{DOMINO_RUN_ID}` into a Workspace but mount `/artifacts/mlflow/{DOMINO_PROJECT_ID}/` into the Model API. This ensures that the artifacts cannot be modified afer a workspace stops. MLFLOW runs track the `DOMINO_RUN_ID` which can be used by the Model API to discover the artifacts loaded by the MLFLOW run from inside the workspace.
-
-The takeaway being, the approach is flexible and can adapt to complex requirements while still ensuring large LLM artifacts are not copied.
-
-
-   
-
 
 ## Environment
 
