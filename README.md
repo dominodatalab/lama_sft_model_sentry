@@ -23,6 +23,7 @@ The following refinements are possible which will serve other Non Functional Req
 2. Instead of mounting a folder `/artifacts/mlflow/{DOMINO_PROJECT_ID}` we could mount the folder `/artifacts/mlflow/{DOMINO_PROJECT_ID}/{DOMINO_RUN_ID}` into a Workspace and mount `/artifacts/mlflow/{DOMINO_PROJECT_ID}/` into the Model API.
 3. This ensures that the artifacts cannot be modified afer a Domino workspace/job stops. MLFLOW Model Registry track the `DOMINO_RUN_ID` indirectly via the MLFLOW run associated with the registered model version. This can be used by the Model API to discover the artifacts folder loaded by the MLFLOW run from inside the workspace.
 4. If we are willing to create a custom domsed mutation we can go further and can also ensure only the `/artifacts/mlflow/{DOMINO_PROJECT_ID}/{DOMINO_RUN_ID}`  is mounted into the Model API Container making this operationally efficient.
+5. [Local Testing of the Pyfunc model inside the workspace] (https://github.com/dominodatalab/lama_sft_model_sentry/blob/main/local_testing_pyfunc_model.ipynb) - You should not have to leave your workspace to test model execution just because it is a LLM model. This is another area where the strategy to use a shared artifact folder shines. 
 
 >> The takeaway being, the approach is flexible and can adapt to complex requirements while still
 >> being cost efficient by ensuring large LLM artifacts are not copied multiple times, and compute
