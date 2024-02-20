@@ -11,8 +11,11 @@ The mount is unique to each project in Domino and is mounted a follows in the Do
 /artifacts/mlflow/{DOMINO_PROJECT_ID}
 ```
 
-For this basic demo, the mutation applies the "datasets" NFS mount into both workspaces and model api as follows:
-`/artifacts/mlflow/{DOMINO_PROJECT_ID}` ensuring the workloads only see the sub-folder for their projects. The Domino workloads will NOT log large LLM artifacts (such as checkpoints) to MLFLOW Artifact Store but instead write them directly to this location. Writing large files such as these to the artifact store is burden on storage cost (exorbitant because each deployment uses its own copy), execution time (for MLFLOW runs which adds to compute costs), model API deployment time (copying the large artifacts)
+For this basic demo, the mutation applies the "datasets" NFS mount into both workspaces and model api as follows: `/artifacts/mlflow/{DOMINO_PROJECT_ID}`
+
+This ensures that the workloads only see the sub-folder for their projects. The Domino workloads will NOT log large LLM artifacts (such as checkpoints) to MLFLOW Artifact Store but instead write them directly to this location. Writing large files such as these to the artifact store is burden on storage cost (exorbitant because each deployment uses its own copy), execution time (for MLFLOW runs which adds to compute costs), model API deployment time (copying the large artifacts)
+
+## Refinements for managing integrity of the Model Artifacts
 
 The following refinements are possible which will serve other Non Functional Requirements like managing the integrity of the artifacts-
 
@@ -21,9 +24,13 @@ The following refinements are possible which will serve other Non Functional Req
 3. This ensures that the artifacts cannot be modified afer a Domino workspace/job stops.
 MLFLOW Model Registry track the `DOMINO_RUN_ID` indirectly via the MLFLOW run associated with the registered model version. This can be used by the Model API to discover the artifacts folder loaded by the MLFLOW run from inside the workspace. A custom domsed mutation can also ensure only the `/artifacts/mlflow/{DOMINO_PROJECT_ID}/{DOMINO_RUN_ID}` is mounted making this operationally efficient.
 
-The takeaway being, the approach is flexible and can adapt to complex requirements while still being cost efficient by ensuring large LLM artifacts are not copied multiple times, and compute costs are no more than necessary.
+>> The takeaway being, the approach is flexible and can adapt to complex requirements while still
+>> being cost efficient by ensuring large LLM artifacts are not copied multiple times, and compute
+>> costs are no more than necessary.
 
-The following notebooks are included-
+## Included Notebooks and Model Code
+
+The following notebooks/code is included-
 
 1. Fine Tuning the LAMA SFT Model [notebook](https://github.com/dominodatalab/lama_sft_model_sentry/blob/main/llama2-ft.ipynb)
 2. Clone the [repo](https://github.com/dominodatalab/domino-field-solutions-installations). The model checkpoints are written to `/artifacts/mlflow/{DOMINO_PROJECT_ID}`
