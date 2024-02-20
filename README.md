@@ -21,8 +21,8 @@ The following refinements are possible which will serve other Non Functional Req
 
 1. The MODEL API will mount the NFS mount as a readonly folder.
 2. Instead of mounting a folder `/artifacts/mlflow/{DOMINO_PROJECT_ID}` we could mount the folder `/artifacts/mlflow/{DOMINO_PROJECT_ID}/{DOMINO_RUN_ID}` into a Workspace and mount `/artifacts/mlflow/{DOMINO_PROJECT_ID}/` into the Model API.
-3. This ensures that the artifacts cannot be modified afer a Domino workspace/job stops.
-MLFLOW Model Registry track the `DOMINO_RUN_ID` indirectly via the MLFLOW run associated with the registered model version. This can be used by the Model API to discover the artifacts folder loaded by the MLFLOW run from inside the workspace. A custom domsed mutation can also ensure only the `/artifacts/mlflow/{DOMINO_PROJECT_ID}/{DOMINO_RUN_ID}` is mounted making this operationally efficient.
+3. This ensures that the artifacts cannot be modified afer a Domino workspace/job stops. MLFLOW Model Registry track the `DOMINO_RUN_ID` indirectly via the MLFLOW run associated with the registered model version. This can be used by the Model API to discover the artifacts folder loaded by the MLFLOW run from inside the workspace.
+4. If we are willing to create a custom domsed mutation we can go further and can also ensure only the `/artifacts/mlflow/{DOMINO_PROJECT_ID}/{DOMINO_RUN_ID}`  is mounted into the Model API Container making this operationally efficient.
 
 >> The takeaway being, the approach is flexible and can adapt to complex requirements while still
 >> being cost efficient by ensuring large LLM artifacts are not copied multiple times, and compute
@@ -40,7 +40,9 @@ The following notebooks/code is included-
 
 
 
-## Installation of Domsed
+## Installation 
+
+### Install Domsed
 
 Follow these steps:
 
@@ -52,7 +54,7 @@ helm install -f values.yaml domsed helm/domsed -n ${platform_namespace}
 kubectl label namespace ${compute_namespace} operator-enabled=true
 ```
 
-## Install the mutation
+### Install the mutation
 ```shell
 kubectl -n domino-platform create -f mutation.yaml
 ```
