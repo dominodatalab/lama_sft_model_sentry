@@ -5,7 +5,7 @@ This example adapts the LAMA2 SFT model notebook to train dnd deploy to Model Re
 The main challenge is finding shared storage between Workspace/Jobs in Domino and Model API. This is tackled by using
 [Domsed](https://github.com/cerebrotech/domsed) to use the NFS mount used for Domino Datasets.
 
-The mount is unique to each project in Domino and is mounted a follows in the Domino workloads and Model API
+The mount is unique to each project in Domino and is mounted as follows in the Domino workloads and Model API
 
 ```shell
 /artifacts/mlflow/{DOMINO_PROJECT_ID}
