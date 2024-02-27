@@ -43,6 +43,8 @@ The following notebooks/code is included-
 
 ### Install Domsed
 
+Clone this [repo](https://github.com/dominodatalab/domino-field-solutions-installations)
+
 Follow these steps:
 
 ```shell
