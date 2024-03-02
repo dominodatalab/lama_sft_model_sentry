@@ -2,7 +2,7 @@ import mlflow
 import transformers
 
 class MyModel(mlflow.pyfunc.PythonModel):
-
+    
     def load_context(self, context):
         import os
         import torch
@@ -11,8 +11,11 @@ class MyModel(mlflow.pyfunc.PythonModel):
             AutoTokenizer,
             BitsAndBytesConfig
         )
+        
+        device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
         self.project_id = os.listdir('/artifacts/mlflow')[0]
+        prefix = f"{self.project_id}/version0"
         compute_dtype = getattr(torch, "float16")
         quant_config = BitsAndBytesConfig(load_in_4bit=True,
                                           bnb_4bit_quant_type="nf4",
@@ -20,18 +23,21 @@ class MyModel(mlflow.pyfunc.PythonModel):
                                           bnb_4bit_use_double_quant=False)
 
         ft_model_name = "final_merged_checkpoint"
-        model_tokenizer_path = f"/artifacts/mlflow/{self.project_id}/{ft_model_name}"
+        model_cache = "llama2-model-cache"
+        model_tokenizer_path = f"/artifacts/mlflow/{prefix}/{ft_model_name}"
         
         self.model = AutoModelForCausalLM.from_pretrained(model_tokenizer_path,
-                                                          cache_dir=f"/artifacts/mlflow/{self.project_id}/cache/",
+                                                          cache_dir=f"/artifacts/mlflow/{prefix}/{model_cache}/",
                                                           quantization_config=quant_config,
-                                                          device_map="auto")
+                                                          device_map="auto"
+                                                          #device="0"
+                                                          )
         self.model.config.use_cache = False
         self.model.config.pretraining_tp = 1
 
         # Load tokenizer
         self.tokenizer = AutoTokenizer.from_pretrained(model_tokenizer_path, 
-                                                       cache_dir=f"/artifacts/mlflow/{self.project_id}/cache/",
+                                                       cache_dir=f"/artifacts/mlflow/{prefix}/{model_cache}/",
                                                        trust_remote_code=True)
         self.tokenizer.pad_token = self.tokenizer.eos_token
         self.tokenizer.padding_side = "right"

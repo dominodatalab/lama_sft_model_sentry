@@ -1,5 +1,7 @@
 # LAMA2 SFT Model with integration with Model Sentry
 
+> Remember to downgrade the transformers to `sudo pip install transformers==4.31`
+
 This example adapts the LAMA2 SFT model notebook to train dnd deploy to Model Registry for integration with Model Sentry
 
 The main challenge is finding shared storage between Workspace/Jobs in Domino and Model API. This is tackled by using
