@@ -28,3 +28,4 @@ rules:
       - mountPath: "/artifacts/mlflow/{{ object['metadata']['labels']['dominodatalab.com/project-id'] }}"
         subPath: "{{ object['metadata']['labels']['dominodatalab.com/project-id'] }}"
         name: prediction-data-volume
+        readOnly: true
