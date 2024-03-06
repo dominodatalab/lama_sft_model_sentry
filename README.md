@@ -86,7 +86,7 @@ RUN /opt/domino/bin/validate.sh
 
 RUN pip install -q -U trl==0.7.1 transformers==4.33.2 accelerate==0.23.0 peft==0.6.0
 RUN pip install -q datasets==2.14.5 bitsandbytes==0.41.1 einops==0.6.1 mlflow==2.7.1 evaluate==0.4.0
-RUN pip install --no-cache-dir Flask Flask-Compress Flask-Cors jsonify uWSGI 
+RUN pip install --no-cache-dir Flask Flask-Compress Flask-Cors jsonify uWSGI streamlit
 
 RUN pip uninstall --yes transformer-engine
 RUN pip uninstall -y apex
