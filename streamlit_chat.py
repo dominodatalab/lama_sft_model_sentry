@@ -19,7 +19,7 @@ def get_llm_response(query):
     return response.json()['result']
 
 # Change these accordingly. 
-# Right now this is refering to the API from the lama_sft_model_sentry project created from the repo at https://github.com/dominodatalab/lama_sft_model_sentry"""
+# Right now this is refering to the API from the lama_sft_model_sentry project created from the repo at https://github.com/dominodatalab/lama_sft_model_sentry
 
 # specify the model api details
 llm_api_url = "https://dev.qbe.domino.tech:443/models/65e30c04b49eb222342a4254/latest/model"
