@@ -22,7 +22,7 @@ def get_llm_response(query):
 # Right now this is refering to the API from the lama_sft_model_sentry project created from the repo at https://github.com/dominodatalab/lama_sft_model_sentry
 
 # specify the model api details
-llm_api_url = "https://dev.qbe.domino.tech:443/models/65e30c04b49eb222342a4254/latest/model"
+llm_api_url = os.environ.get('domino_model_endpoint')
 llm_api_key = os.environ.get('llm_api_key')
 
 # Set up streamlit and call the LLM API to get an answer to the user's query
