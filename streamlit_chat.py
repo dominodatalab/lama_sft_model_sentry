@@ -1,8 +1,8 @@
 import streamlit as st
 import os
 import requests
-import torch
-import transformers
+#import torch
+#import transformers
 
 # Get a response from the LLM API
 def get_llm_response(query):
